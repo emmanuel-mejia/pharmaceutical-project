@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'medicines', #App registration
     'research_facilities'
-
 ]
 
 MIDDLEWARE = [
