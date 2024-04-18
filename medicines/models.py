@@ -7,5 +7,10 @@ class Medicine (models.Model):
     price = models.IntegerField(default=1,null=False)
     research_facility = models.ForeignKey(ResearchFacility, on_delete=models.CASCADE, related_name='medicines')
 
+    @property
+    def price_format(self):
+        return f'${self.price}.00'
+        #return f'${self.price / 100}.00'
+
     def __str__(self) -> str:
         return self.name

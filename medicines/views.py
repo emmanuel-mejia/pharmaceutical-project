@@ -1,20 +1,75 @@
 from medicines.models import Medicine
-
-from medicines.serializers import MedicinesSerializer
-
+from medicines.serializers import MedicinesSerializerResponse
+from medicines.serializers import MedicineSerializerRequest
 from rest_framework.response import Response #JSON response
 from rest_framework.decorators import api_view
 
-@api_view(['GET'])
+@api_view(['GET','POST'])
 def medicines(request):
-    medicines = Medicine.objects.all()
-    serializer_medicines = MedicinesSerializer(medicines, many=True)
 
-    return Response(serializer_medicines.data)
+    if request.method == 'GET':
+
+        medicines = Medicine.objects.all()
+        serializer_medicines = MedicinesSerializerResponse(medicines, many=True)
+
+        return Response(serializer_medicines.data)
+    
+    else: 
+        
+        #A new serializer is generated from the entered data
+        #{"name":"Paracetamol", "price_format":25}
+
+        #Only the included values will be taken into consideration
+        #{"name":"Paracetamol", "price_format":25,"Hack attempt":"Hack attempt"} 
+        
+        serializer_medicines = MedicinesSerializerResponse(data=request.data)
+
+        if serializer_medicines.is_valid():
+        
+            Medicine.objects.create(
+                name=request.data['name'],
+                price=request.data['price'],
+                research_facility_id=request.data['research_facility_id']
+            )
+            #print(serializer_medicines.data)
+            return Response(serializer_medicines.data)
+    
+
+            '''
+            #Other way to do this is by obtaining and parse the data 
+            serializer_medicines.create(
+                request.data['name'],
+                request.data['price'],
+                request.data['research_facility_id']
+            )
+            '''
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def detail_medicine(request, pk):
+
+    medicine = Medicine.objects.get(pk=pk)
+
+    if request.method == 'GET':
+        pass
+    
+    if request.method == 'PUT':
+        serializer = MedicineSerializerRequest(data=request.data) #Serlize
+
+        if serializer.is_valid():#Validation
+            medicine.name = request.data['name']#persistance
+            medicine.price = request.data['price']
+            medicine.save() #saving
+    
+    serializer = MedicinesSerializerResponse(medicine) #return
+    return Response(serializer.data)
+
+    if request.method == 'DELETE':
+        pass
 
 
 '''
-#240416 Sustituimos el uso de JsonResponse por el restframework
+#240416 JsonResponse was changed by the restframework
  
 from django.shortcuts import render
 from django.http import JsonResponse
