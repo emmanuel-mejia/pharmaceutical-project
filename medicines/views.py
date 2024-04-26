@@ -54,18 +54,23 @@ def detail_medicine(request, pk):
         pass
     
     if request.method == 'PUT':
-        serializer = MedicineSerializerRequest(data=request.data) #Serlize
+
+        serializer = MedicineSerializerRequest(data=request.data) #Serialize
 
         if serializer.is_valid():#Validation
             medicine.name = request.data['name']#persistance
             medicine.price = request.data['price']
             medicine.save() #saving
-    
+
+    if request.method == 'DELETE':
+        
+            medicine.delete()
+            medicine.save() #saving
+
     serializer = MedicinesSerializerResponse(medicine) #return
     return Response(serializer.data)
 
-    if request.method == 'DELETE':
-        pass
+        
 
 
 '''
