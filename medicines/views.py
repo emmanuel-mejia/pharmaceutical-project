@@ -3,6 +3,14 @@ from medicines.serializers import MedicinesSerializerResponse
 from medicines.serializers import MedicineSerializerRequest
 from rest_framework.response import Response #JSON response
 from rest_framework.decorators import api_view
+from django.http import HttpResponse
+from django.shortcuts import render
+
+
+def index(request):
+    medicines = Medicine.objects.all()#modelo traer objeto y a la función all
+    #return HttpResponse('Hello Pharmaceutical Company')
+    return render(request, 'index.html',{'medicines':medicines})
 
 @api_view(['GET','POST'])
 def medicines(request):
@@ -54,18 +62,23 @@ def detail_medicine(request, pk):
         pass
     
     if request.method == 'PUT':
-        serializer = MedicineSerializerRequest(data=request.data) #Serlize
+
+        serializer = MedicineSerializerRequest(data=request.data) #Serialize
 
         if serializer.is_valid():#Validation
             medicine.name = request.data['name']#persistance
             medicine.price = request.data['price']
             medicine.save() #saving
-    
+
+    if request.method == 'DELETE':
+        
+            medicine.delete()
+            medicine.save() #saving
+
     serializer = MedicinesSerializerResponse(medicine) #return
     return Response(serializer.data)
 
-    if request.method == 'DELETE':
-        pass
+        
 
 
 '''
