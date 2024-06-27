@@ -4,12 +4,13 @@ from medicines.serializers import MedicineSerializerRequest
 from rest_framework.response import Response #JSON response
 from rest_framework.decorators import api_view
 from django.http import HttpResponse
+from django.shortcuts import render
 
 
 def index(request):
-    #medicines = Medicine.objects.all()#modelo traer objeto y a la función all
-    return HttpResponse('Hello Pharmaceutical Company')
-    #return render(request, 'cities.html',{'cities':cities})
+    medicines = Medicine.objects.all()#modelo traer objeto y a la función all
+    #return HttpResponse('Hello Pharmaceutical Company')
+    return render(request, 'index.html',{'medicines':medicines})
 
 @api_view(['GET','POST'])
 def medicines(request):
