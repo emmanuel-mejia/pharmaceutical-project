@@ -6,4 +6,5 @@ This includes the following methods: GET, POST, PUT, DELETE.
 
 The project is built with Django using Serializers.
 
+
 #
